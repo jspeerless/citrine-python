@@ -8,7 +8,7 @@ from boto3.session import Config
 import requests
 from botocore.exceptions import ClientError
 
-from gemd.entity.file_link import FileLink as GEMDFileLink
+from taurus.entity.file_link import FileLink as TaurusFileLink
 from citrine._serialization.properties import String
 from citrine._rest.collection import Collection
 from citrine._rest.resource import Resource
@@ -34,7 +34,7 @@ class _Uploader:
         self.s3_addressing_style = 'auto'
 
 
-class FileLink(Resource['FileLink'], GEMDFileLink):
+class FileLink(Resource['FileLink'], TaurusFileLink):
     """
     Resource that stores the name and url of an external file.
 
@@ -52,14 +52,14 @@ class FileLink(Resource['FileLink'], GEMDFileLink):
     typ = String('type')
 
     def __init__(self, filename: str, url: str):
-        GEMDFileLink.__init__(self, filename, url)
-        self.typ = GEMDFileLink.typ
+        TaurusFileLink.__init__(self, filename, url)
+        self.typ = TaurusFileLink.typ
 
     def __str__(self):
         return '<File link {!r}>'.format(self.filename)
 
     def as_dict(self) -> dict:
-        """Dump to a dictionary (useful for interoperability with gemd)."""
+        """Dump to a dictionary (useful for interoperability with taurus)."""
         return self.dump()
 
 

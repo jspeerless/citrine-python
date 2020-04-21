@@ -11,16 +11,16 @@ from citrine._utils.functions import set_default_uid
 from citrine.resources.data_concepts import DataConcepts
 from citrine.resources.material_spec import MaterialSpecCollection
 from citrine.resources.object_runs import ObjectRun, ObjectRunCollection
-from gemd.entity.file_link import FileLink
-from gemd.entity.link_by_uid import LinkByUID
-from gemd.entity.object.material_run import MaterialRun as GEMDMaterialRun
-from gemd.entity.object.material_spec import MaterialSpec as GEMDMaterialSpec
-from gemd.entity.object.process_run import ProcessRun as GEMDProcessRun
-from gemd.json import GEMDEncoder
-from gemd.util import writable_sort_order
+from taurus.entity.file_link import FileLink
+from taurus.entity.link_by_uid import LinkByUID
+from taurus.entity.object.material_run import MaterialRun as TaurusMaterialRun
+from taurus.entity.object.material_spec import MaterialSpec as TaurusMaterialSpec
+from taurus.entity.object.process_run import ProcessRun as TaurusProcessRun
+from taurus.json import TaurusEncoder
+from taurus.util import writable_sort_order
 
 
-class MaterialRun(ObjectRun, Resource['MaterialRun'], GEMDMaterialRun):
+class MaterialRun(ObjectRun, Resource['MaterialRun'], TaurusMaterialRun):
     """
     A material run.
 
@@ -30,10 +30,10 @@ class MaterialRun(ObjectRun, Resource['MaterialRun'], GEMDMaterialRun):
         Name of the material run.
     uids: Map[str, str], optional
         A collection of
-        `unique IDs <https://citrineinformatics.github.io/gemd-docs/
+        `unique IDs <https://citrineinformatics.github.io/taurus-documentation/
         specification/unique-identifiers/>`_.
     tags: List[str], optional
-        `Tags <https://citrineinformatics.github.io/gemd-docs/specification/tags/>`_
+        `Tags <https://citrineinformatics.github.io/taurus-documentation/specification/tags/>`_
         are hierarchical strings that store information about an entity. They can be used
         for filtering and discoverability.
     notes: str, optional
@@ -56,7 +56,7 @@ class MaterialRun(ObjectRun, Resource['MaterialRun'], GEMDMaterialRun):
 
     """
 
-    _response_key = GEMDMaterialRun.typ  # 'material_run'
+    _response_key = TaurusMaterialRun.typ  # 'material_run'
 
     name = String('name')
     uids = Mapping(String('scope'), String('id'), 'uids')
@@ -73,15 +73,15 @@ class MaterialRun(ObjectRun, Resource['MaterialRun'], GEMDMaterialRun):
                  uids: Optional[Dict[str, str]] = None,
                  tags: Optional[List[str]] = None,
                  notes: Optional[str] = None,
-                 process: Optional[GEMDProcessRun] = None,
+                 process: Optional[TaurusProcessRun] = None,
                  sample_type: Optional[str] = "unknown",
-                 spec: Optional[GEMDMaterialSpec] = None,
+                 spec: Optional[TaurusMaterialSpec] = None,
                  file_links: Optional[List[FileLink]] = None):
-        DataConcepts.__init__(self, GEMDMaterialRun.typ)
-        GEMDMaterialRun.__init__(self, name=name, uids=set_default_uid(uids),
-                                 tags=tags, process=process,
-                                 sample_type=sample_type, spec=spec,
-                                 file_links=file_links, notes=notes)
+        DataConcepts.__init__(self, TaurusMaterialRun.typ)
+        TaurusMaterialRun.__init__(self, name=name, uids=set_default_uid(uids),
+                                   tags=tags, process=process,
+                                   sample_type=sample_type, spec=spec,
+                                   file_links=file_links, notes=notes)
 
     def __str__(self):
         return '<Material run {!r}>'.format(self.name)
@@ -138,10 +138,10 @@ class MaterialRunCollection(ObjectRunCollection[MaterialRun]):
         # Add a link to the root as the "object"
         blob["object"] = LinkByUID(scope=root_uid_scope, id=root_uid_id)
 
-        # Serialize using normal json (with the GEMDEncoder) and then deserialize with the
-        # GEMDEncoder encoder in order to rebuild the material history
+        # Serialize using normal json (with the TaurusEncoder) and then deserialize with the
+        # TaurusJson encoder in order to rebuild the material history
         return MaterialRun.get_json_support().loads(
-            json.dumps(blob, cls=GEMDEncoder, sort_keys=True))
+            json.dumps(blob, cls=TaurusEncoder, sort_keys=True))
 
     def filter_by_spec(self,
                        spec_id: str,

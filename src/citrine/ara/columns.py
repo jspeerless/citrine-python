@@ -2,7 +2,7 @@
 from typing import Type, Optional, List  # noqa: F401
 from abc import abstractmethod
 
-from gemd.enumeration.base_enumeration import BaseEnumeration
+from taurus.enumeration.base_enumeration import BaseEnumeration
 
 from citrine._serialization.serializable import Serializable
 from citrine._serialization.polymorphic_serializable import PolymorphicSerializable
